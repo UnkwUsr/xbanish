@@ -261,9 +261,17 @@ main(int argc, char *argv[])
 			switch (xie->evtype) {
 			case XI_RawMotion:
 			case XI_RawButtonPress:
-				if (ignore_scroll && ((xie->detail >= 4 && xie->detail <= 7) ||
-						xie->event_x == xie->event_y))
-					break;
+				if (ignore_scroll) {
+					if (xie->detail >= 4 && xie->detail <= 7) {
+						hide_cursor();
+						break;
+					}
+					// this event happens not only on scroll (at least on
+					// touchpads), so do not force hide cursor
+					if(xie->event_x == xie->event_y) {
+						break;
+					}
+				}
 				if (!always_hide)
 					show_cursor();
 				break;
